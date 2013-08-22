@@ -1,0 +1,42 @@
+
+Build OpenOCD from Source
+-------------------------
+
+cd ~/develop/BoneTag_Software/mluckham
+
+git clone git://git.libusb.org/libusb.git
+cd libusb
+./autogen.sh
+make
+make install
+
+cd ..
+
+git clone git://git.code.sf.net/p/openocd/code
+cd openocd
+./bootstrap
+./configure --enable-maintainer-mode --enable-dummy --enable-buspirate --enable-sysfsgpio --enable-ti-icdi
+make
+make install
+ (on Ubuntu use 'sudo make install')
+
+
+Test with Stellaris Launchpad ICD In Circuit Debugger
+(USB connection /dev/ttyACM0)
+-----------------------------------------------------
+
+- connect the Launchpad Debug port to host with USB cable
+- verify /dev/ttyACM0 device is created
+
+- run openocd in background so can use telnet for command-line interface
+- on Ubuntu use 'sudo openocd ...')
+
+openocd -s ~/develop/BoneTag_Software/mluckham/openocd/tcl -f board/ek-lm4f120xl.cfg &
+
+telnet localhost 4444
+> flash banks
+> flash info 0
+> exit
+
+- use ps -el to get the pid of the openocd process, then kill -9 <pid#>
+
